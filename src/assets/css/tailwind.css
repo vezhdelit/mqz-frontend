@@ -2,6 +2,12 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@import "./shadows.css";
+@import "./utilities.css";
+@import "./font-sizes.css";
+@import "./animations.css";
+@import "./scrollbar.css";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

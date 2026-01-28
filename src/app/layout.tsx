@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Geist, Geist_Mono, Inter } from "next/font/google";
+import "@/assets/css/tailwind.css";
+import Providers from "@/providers";
+import Surface from "@/components/ui/surface";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,11 +27,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={inter.variable}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0e0729] flex flex-col h-screen`}
       >
-        {children}
+        <Providers>
+          <main className="containerize p-5 flex flex-1">
+            <Surface className="flex flex-1 overflow-auto">{children}</Surface>
+          </main>
+        </Providers>
       </body>
     </html>
   );

@@ -1,0 +1,39 @@
+export interface QuizResponse {
+    quizes: Quiz[];
+}
+
+export interface Quiz {
+    id: string;
+    type: "blurred_poster" | string; // Using a union in case there are other types
+    difficulty: "easy" | "medium" | "hard" | string;
+    status: "active" | "inactive" | string;
+    createdAt: string; // ISO Date string
+    updatedAt: string;
+    activatedAt: string | null;
+    deactivatedAt: string | null;
+    archivedAt: string | null;
+    questions: QuizQuestion[];
+    options: QuizOption[];
+}
+
+export interface QuizQuestion {
+    id: string;
+    quizId: string;
+    title: string;
+    description: string | null;
+    items: QuizQuestionItem[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface QuizQuestionItem {
+    imageUrl: string;
+}
+
+export interface QuizOption {
+    id: string;
+    quizId: string;
+    text: string;
+    createdAt: string;
+    updatedAt: string;
+}

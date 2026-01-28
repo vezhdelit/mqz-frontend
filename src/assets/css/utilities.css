@@ -1,0 +1,36 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@utility max-container {
+  margin-inline: auto;
+  max-width: 80rem; /* 1280px */
+}
+
+@utility containerize {
+  display: flex;
+  flex-direction: column;
+
+  margin-inline: auto;
+  width: 100%;
+  max-width: 80rem; /* 1280px */
+  min-height: 100dvh;
+
+  overflow: hidden;
+}
+
+@utility no-select {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  -khtml-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
