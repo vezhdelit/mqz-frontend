@@ -1,6 +1,6 @@
-export interface QuizResponse {
-    quizes: Quiz[];
-}
+import { ApiResponseWithItems } from "./api";
+
+export type QuizResponse = ApiResponseWithItems<Quiz>;
 
 export interface Quiz {
     id: string;
@@ -36,4 +36,14 @@ export interface QuizOption {
     text: string;
     createdAt: string;
     updatedAt: string;
+}
+
+export interface AnswerQuizResponse {
+    message: string;
+    givenAnswers: AnswerValue[];
+    correctAnswers: AnswerValue[];
+    status: "correct" | "incorrect" | string;
+}
+export interface AnswerValue {
+    value: string;
 }

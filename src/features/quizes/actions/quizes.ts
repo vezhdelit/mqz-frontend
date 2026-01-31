@@ -1,7 +1,7 @@
 "use server"
 
 import { getMqzAPIFetchInstance } from "@/lib/mqz-api";
-import { QuizResponse } from "@/types/quizes";
+import { AnswerQuizResponse, QuizResponse } from "@/types/quizes";
 
 export const getQuizes = async () => {
     const mqzFetchInstance = await getMqzAPIFetchInstance();
@@ -12,10 +12,9 @@ export const answerQuiz = async (quizId: string, answers: {
     value: string;
 }[]) => {
     const mqzFetchInstance = await getMqzAPIFetchInstance();
-    return mqzFetchInstance<{ message: string }>(`/quizes/answer`, {
+    return mqzFetchInstance<AnswerQuizResponse>(`/quizes/${quizId}/answer`, {
         method: "POST",
         body: {
-            quizId,
             answers
         },
     });

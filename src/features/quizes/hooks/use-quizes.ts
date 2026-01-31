@@ -7,9 +7,10 @@ export const useGetQuizes = () => {
         queryFn: async () => {
             const { data, error } = await getQuizes();
             if (error) {
+                console.error("Error fetching quizes:", error);
                 throw new Error(error.message);
             }
-            return data.quizes;
+            return data;
         },
     });
 };
