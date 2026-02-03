@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { getMqzAPIFetchInstance } from "@/lib/mqz-api";
 import { SignInResponse } from "@/features/auth/types/auth";

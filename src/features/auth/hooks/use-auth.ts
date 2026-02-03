@@ -1,15 +1,18 @@
 import { useMutation } from "@tanstack/react-query"
-import { signIn, signOut, signUp } from "../actions/auth";
 import { useAuthStore } from "../store/auth.store";
+import { signIn, signOut, signUp } from "../actions/auth";
 
 export const useSignIn = () => {
     const { setUserData } = useAuthStore();
-    useMutation({
+    return useMutation({
         mutationFn: async ({ email, password }: { email: string; password: string }) => {
             const { data, error } = await signIn(email, password);
             if (error) {
+                console.log("useSignIn error:", error);
                 throw new Error(error.message);
             }
+            console.log("useSignIn data:", data);
+
             setUserData(data.token, data.user);
             return data;
         },
@@ -53,4 +56,14 @@ export const useSignOut = () => {
             console.error("Error signing out:", error);
         },
     });
+}
+
+export const useAuth = () => {
+    const { token, user } = useAuthStore();
+
+    return {
+        isAuthenticated: !!token && !!user,
+        token,
+        user,
+    };
 }
