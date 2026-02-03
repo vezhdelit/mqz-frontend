@@ -1,3 +1,4 @@
+export type UserRole = "user" | "admin";
 export type User = {
     name: string | null;
     email: string;
@@ -5,7 +6,7 @@ export type User = {
     image: string | null;
     createdAt: string;
     updatedAt: string;
-    role: "user" | "admin";
+    role: UserRole;
     banned: boolean;
     banReason: string | null;
     banExpires: string | null;
