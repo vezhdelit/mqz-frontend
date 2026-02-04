@@ -42,7 +42,7 @@ export default function Page({
   return (
     <div className="flex flex-col gap-5 flex-1">
       <h1 className="text-3xl font-bold text-white mx-auto w-full text-center">
-        Game {gameId}
+        Game 
       </h1>
       <div className="flex flex-col gap-6">
         {data && <GameItem {...data} />}
@@ -207,8 +207,8 @@ const QuizItem = ({
 
   return (
     <Card key={quizId}>
-      <CardContent className="flex flex-row gap-5">
-        <div className="w-1/2 flex flex-col items-center justify-center gap-4 relative min-h-[500px]">
+      <CardContent className="flex flex-col lg:flex-row gap-3 sm:gap-5 p-3 sm:p-4 md:p-6">
+        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center gap-2 sm:gap-4 relative min-h-[300px] sm:min-h-[400px] md:min-h-[500px]">
           {/* Quiz Questions */}
           <div
             className={cn(
@@ -219,11 +219,11 @@ const QuizItem = ({
             {quizQuestions.map((question) => (
               <div
                 key={question.id}
-                className="flex flex-col items-center justify-center gap-4"
+                className="flex flex-col items-center justify-center gap-2 sm:gap-4 w-full px-2"
               >
-                <h2 className="text-lg font-semibold">{question.title}</h2>
-                {question.description && <h3>{question.description}</h3>}
-                <div className="flex flex-row gap-2">
+                <h2 className="text-sm sm:text-base md:text-lg font-semibold text-center">{question.title}</h2>
+                {question.description && <h3 className="text-xs sm:text-sm md:text-base text-center">{question.description}</h3>}
+                <div className="flex flex-row gap-1 sm:gap-2 flex-wrap justify-center">
                   {question.items.map((item, itemIndex) => (
                     <Image
                       key={itemIndex}
@@ -231,7 +231,7 @@ const QuizItem = ({
                       alt={question.title}
                       width={250}
                       height={400}
-                      className="rounded-md"
+                      className="rounded-md w-auto max-w-[120px] max-h-[200px] sm:max-w-[180px] sm:max-h-[280px] md:max-w-[250px] md:max-h-[400px] object-contain"
                       priority
                     />
                   ))}
@@ -253,11 +253,11 @@ const QuizItem = ({
               {quizReveals.map((reveal) => (
                 <div
                   key={reveal.id}
-                  className="flex flex-col items-center justify-center gap-4"
+                  className="flex flex-col items-center justify-center gap-2 sm:gap-4 w-full px-2"
                 >
-                  <h2 className="text-lg font-semibold">{reveal.title}</h2>
-                  {reveal.description && <h3>{reveal.description}</h3>}
-                  <div className="flex flex-row gap-2">
+                  <h2 className="text-sm sm:text-base md:text-lg font-semibold text-center">{reveal.title}</h2>
+                  {reveal.description && <h3 className="text-xs sm:text-sm md:text-base text-center">{reveal.description}</h3>}
+                  <div className="flex flex-row gap-1 sm:gap-2 flex-wrap justify-center">
                     {reveal.items.map((item, itemIndex) => (
                       <Image
                         key={itemIndex}
@@ -265,7 +265,7 @@ const QuizItem = ({
                         alt={reveal.title}
                         width={250}
                         height={400}
-                        className="rounded-md"
+                        className="rounded-md w-auto max-w-[120px] max-h-[200px] sm:max-w-[180px] sm:max-h-[280px] md:max-w-[250px] md:max-h-[400px] object-contain"
                         priority
                       />
                     ))}
@@ -276,15 +276,15 @@ const QuizItem = ({
           )}
         </div>
 
-        <div className="w-1/2 flex flex-col items-center justify-center gap-4">
+        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center gap-2 sm:gap-4">
           {quizAnswers && isCorrect !== null ? (
             isCorrect ? (
-              <IoIosCheckmarkCircle className="size-20 text-green-500 bg-white rounded-full" />
+              <IoIosCheckmarkCircle className="size-10 sm:size-14 md:size-20 text-green-500 bg-white rounded-full" />
             ) : (
-              <IoIosCloseCircle className="size-20 text-rose-500 bg-white rounded-full" />
+              <IoIosCloseCircle className="size-10 sm:size-14 md:size-20 text-rose-500 bg-white rounded-full" />
             )
           ) : null}
-          <div className=" grid grid-cols-2 gap-4 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 md:gap-4 w-full">
             {quizOptions.map((option) => (
               <Button
                 disabledBehavior={"none"}
@@ -293,9 +293,9 @@ const QuizItem = ({
                 }}
                 size="lg"
                 key={option.id}
-                className={cn(optionClassName(option))}
+                className={cn(optionClassName(option), "text-xs sm:text-sm md:text-base h-auto py-2 sm:py-3 md:py-4 whitespace-normal min-h-[44px]")}
               >
-                <span className={"truncate"}>{option.text}</span>
+                <span className="text-center leading-tight">{option.text}</span>
               </Button>
             ))}
           </div>
