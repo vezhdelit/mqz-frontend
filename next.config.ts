@@ -1,3 +1,4 @@
+import { clientEnv } from "@/env/client";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -8,16 +9,6 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       new URL('https://mzjcajrbjkzcwyvcgzfo.supabase.co/**')
     ]
-  },
-
-  output: "standalone",
-  async rewrites() {
-    return [
-      {
-        source: "/api/auth/:path*",
-        destination: 'http://localhost:9999/api/auth/:path*',
-      },
-    ];
   },
 };
 

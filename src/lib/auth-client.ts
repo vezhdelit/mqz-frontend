@@ -1,4 +1,5 @@
+import { clientEnv } from "@/env/client"
 import { createAuthClient } from "better-auth/react"
 export const authClient = createAuthClient({
-    baseURL: "http://localhost:9999"
+    baseURL: clientEnv.NEXT_PUBLIC_MQZ_API_URL
 })
