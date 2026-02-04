@@ -3,10 +3,8 @@ import { z } from "zod";
 
 export const serverEnv = createEnv({
     server: {
-        MQZ_API_URL: z.url()
     },
     runtimeEnv: {
-        MQZ_API_URL: process.env.MQZ_API_URL,
     },
     emptyStringAsUndefined: true,
 });

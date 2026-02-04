@@ -1,16 +1,16 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useAuth, useSignOut } from "@/features/auth/hooks/use-auth";
+import { useGetSession, useSignOut } from "@/features/auth/hooks/use-auth";
 import { useCreateGame } from "@/features/games/hooks/use-games";
 
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
+  const { data: session } = useGetSession();
   const router = useRouter();
   const createGame = useCreateGame();
-  const { isAuthenticated, user } = useAuth();
   const signOut = useSignOut();
 
   const handleSignOut = async () => {
@@ -28,7 +28,7 @@ export default function Page() {
         <h1 className="text-3xl font-bold text-white w-full text-center">
           Welcome to the MQZ Demo
         </h1>
-        {isAuthenticated && (
+        {!!session && (
           <Button
             onClick={handleSignOut}
             variant="destructive"
@@ -39,9 +39,15 @@ export default function Page() {
         )}
       </div>
 
-      {isAuthenticated && user && (
+      {!!session && session.user && (
         <div className="text-center text-gray-300">
-          <p>Welcome back, <span className="font-semibold text-white">{user.name || user.email}</span>!</p>
+          <p>
+            Welcome back,{" "}
+            <span className="font-semibold text-white">
+              {session.user.name || session.user.email}
+            </span>
+            !
+          </p>
         </div>
       )}
 

@@ -3,10 +3,10 @@ import { z } from "zod";
 
 export const clientEnv = createEnv({
     client: {
-        NEXT_PUBLIC_APP_BASE_URL: z.url()
+        NEXT_PUBLIC_MQZ_API_URL: z.url(),
     },
     runtimeEnv: {
-        NEXT_PUBLIC_APP_BASE_URL: process.env.NEXT_PUBLIC_APP_BASE_URL,
+        NEXT_PUBLIC_MQZ_API_URL: process.env.NEXT_PUBLIC_MQZ_API_URL,
     },
     emptyStringAsUndefined: true,
 });

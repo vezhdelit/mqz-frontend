@@ -21,7 +21,6 @@ This project implements a complete authentication flow using server actions, Zus
    - `useSignIn()` - Handle user login
    - `useSignUp()` - Handle user registration
    - `useSignOut()` - Handle user logout
-   - `useAuth()` - Get current authentication state
 
 4. **Auth Components** (`src/features/auth/components/`)
    - `LoginForm` - Login form component
