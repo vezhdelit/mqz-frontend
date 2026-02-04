@@ -5,6 +5,6 @@ const MQZ_API_URL = clientEnv.NEXT_PUBLIC_MQZ_API_URL;
 
 export async function getMqzAPIFetchInstance() {
     return createFetch({
-        baseURL: MQZ_API_URL
+        baseURL: `${MQZ_API_URL}/api`
     });
 }
