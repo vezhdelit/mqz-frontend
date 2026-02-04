@@ -51,7 +51,9 @@ export interface GameQuiz {
     order: number;
     isCompleted: boolean;
     isCorrect: boolean | null;
-    userAnswer: string | null;
+    userAnswers: {
+        value: string;
+    }[] | null;
     pointsEarned: number;
     timeSpentSeconds: number | null;
     createdAt: string;

@@ -14,6 +14,8 @@ export interface Quiz {
     archivedAt: string | null;
     questions: QuizQuestion[];
     options: QuizOption[];
+    reveals: QuizReveal[];
+    answers: QuizAnswer[];
 }
 
 export interface QuizQuestion {
@@ -33,6 +35,16 @@ export interface QuizReveal {
     title: string;
     description: string | null;
     items: QuizQuestionItem[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface QuizAnswer {
+    id: string;
+    quizId: string;
+    questionId: string;
+    answerType: "option" | "text" | string;
+    value: string;
     createdAt: string;
     updatedAt: string;
 }

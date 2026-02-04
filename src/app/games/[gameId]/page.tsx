@@ -17,7 +17,7 @@ import {
   QuizReveal,
 } from "@/features/games/types/quizes";
 import Image from "next/image";
-import { use, useState } from "react";
+import { use, useState, useEffect } from "react";
 import { IoIosCheckmarkCircle, IoIosCloseCircle } from "react-icons/io";
 
 export default function Page({
@@ -102,11 +102,18 @@ const GameQuizItem = (gameQuiz: GameQuiz) => {
       quizId={gameQuiz.quizId}
       quizOptions={gameQuiz.quiz.options}
       quizQuestions={gameQuiz.quiz.questions}
-      quizReveals={quizReveals || undefined}
-      
-      isCorrect={isCorrect}
-      givenAnswers={givenAnswers}
-      correctAnswers={correctAnswers}
+      quizReveals={
+        gameQuiz.isCompleted ? gameQuiz.quiz.reveals : quizReveals || undefined
+      }
+      isCorrect={gameQuiz.isCompleted ? gameQuiz.isCorrect : isCorrect}
+      givenAnswers={
+        gameQuiz.isCompleted ? gameQuiz.userAnswers || null : givenAnswers
+      }
+      quizAnswers={
+        gameQuiz.isCompleted
+          ? gameQuiz.quiz.answers
+          : correctAnswers || undefined
+      }
     />
   );
 };
@@ -116,33 +123,74 @@ const QuizItem = ({
   quizOptions,
   quizQuestions,
   quizReveals,
+  quizAnswers,
+
+  givenAnswers,
 
   onAnswer,
-  givenAnswers,
-  correctAnswers,
+
   isCorrect,
 }: {
   quizId: string;
   quizOptions: QuizOption[];
   quizQuestions: QuizQuestion[];
   quizReveals?: QuizReveal[];
+  quizAnswers?: AnswerValue[];
+
+  givenAnswers?: AnswerValue[] | null;
 
   onAnswer: (
     answer: {
       value: string;
     }[],
   ) => void;
-  givenAnswers?: AnswerValue[] | null;
-  correctAnswers?: AnswerValue[] | null;
   isCorrect?: boolean | null;
 }) => {
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [showReveal, setShowReveal] = useState(false);
+
+  // Preload reveal images when they become available
+  useEffect(() => {
+    if (quizReveals && quizReveals.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setImagesLoaded(false);
+      const imageUrls = quizReveals.flatMap((reveal) =>
+        reveal.items.map((item) => item.imageUrl),
+      );
+
+      const imagePromises = imageUrls.map((url) => {
+        return new Promise((resolve, reject) => {
+          const img = new window.Image();
+          img.src = url;
+          img.onload = resolve;
+          img.onerror = reject;
+        });
+      });
+
+      Promise.all(imagePromises)
+        .then(() => {
+          setImagesLoaded(true);
+          // Small delay for smoother transition
+          setTimeout(() => setShowReveal(true), 50);
+        })
+        .catch(() => {
+          // Even on error, show the reveal
+          setImagesLoaded(true);
+          setTimeout(() => setShowReveal(true), 50);
+        });
+    } else {
+      setShowReveal(false);
+      setImagesLoaded(true);
+    }
+  }, [quizReveals]);
+
   const optionClassName = (option: QuizOption) => {
-    if (!givenAnswers || !correctAnswers) {
+    if (!givenAnswers || !quizAnswers) {
       return "";
     }
 
     const isGiven = givenAnswers.some((given) => given.value === option.id);
-    const isCorrectOption = correctAnswers.some(
+    const isCorrectOption = quizAnswers.some(
       (correct) => correct.value === option.id,
     );
 
@@ -160,9 +208,49 @@ const QuizItem = ({
   return (
     <Card key={quizId}>
       <CardContent className="flex flex-row gap-5">
-        <div className="w-1/2 flex flex-col items-center justify-center gap-4">
-          {quizReveals && quizReveals.length > 0
-            ? quizReveals.map((reveal) => (
+        <div className="w-1/2 flex flex-col items-center justify-center gap-4 relative min-h-[500px]">
+          {/* Quiz Questions */}
+          <div
+            className={cn(
+              "absolute inset-0 flex flex-col items-center justify-center gap-4 transition-opacity duration-500",
+              showReveal ? "opacity-0 pointer-events-none" : "opacity-100",
+            )}
+          >
+            {quizQuestions.map((question) => (
+              <div
+                key={question.id}
+                className="flex flex-col items-center justify-center gap-4"
+              >
+                <h2 className="text-lg font-semibold">{question.title}</h2>
+                {question.description && <h3>{question.description}</h3>}
+                <div className="flex flex-row gap-2">
+                  {question.items.map((item, itemIndex) => (
+                    <Image
+                      key={itemIndex}
+                      src={item.imageUrl}
+                      alt={question.title}
+                      width={250}
+                      height={400}
+                      className="rounded-md"
+                      priority
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Quiz Reveals */}
+          {quizReveals && quizReveals.length > 0 && (
+            <div
+              className={cn(
+                "absolute inset-0 flex flex-col items-center justify-center gap-4 transition-opacity duration-500",
+                showReveal && imagesLoaded
+                  ? "opacity-100"
+                  : "opacity-0 pointer-events-none",
+              )}
+            >
+              {quizReveals.map((reveal) => (
                 <div
                   key={reveal.id}
                   className="flex flex-col items-center justify-center gap-4"
@@ -178,36 +266,18 @@ const QuizItem = ({
                         width={250}
                         height={400}
                         className="rounded-md"
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))
-            : quizQuestions.map((question) => (
-                <div
-                  key={question.id}
-                  className="flex flex-col items-center justify-center gap-4"
-                >
-                  <h2 className="text-lg font-semibold">{question.title}</h2>
-                  {question.description && <h3>{question.description}</h3>}
-                  <div className="flex flex-row gap-2">
-                    {question.items.map((item, itemIndex) => (
-                      <Image
-                        key={itemIndex}
-                        src={item.imageUrl}
-                        alt={question.title}
-                        width={250}
-                        height={400}
-                        className="rounded-md"
+                        priority
                       />
                     ))}
                   </div>
                 </div>
               ))}
+            </div>
+          )}
         </div>
 
         <div className="w-1/2 flex flex-col items-center justify-center gap-4">
-          {correctAnswers && isCorrect !== null ? (
+          {quizAnswers && isCorrect !== null ? (
             isCorrect ? (
               <IoIosCheckmarkCircle className="size-20 text-green-500 bg-white rounded-full" />
             ) : (
