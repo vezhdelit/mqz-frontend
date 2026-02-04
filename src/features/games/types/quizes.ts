@@ -1,4 +1,4 @@
-import { ApiResponseWithItems } from "./api";
+import { ApiResponseWithItems } from "../../../types/api";
 
 export type QuizResponse = ApiResponseWithItems<Quiz>;
 
@@ -19,6 +19,17 @@ export interface Quiz {
 export interface QuizQuestion {
     id: string;
     quizId: string;
+    title: string;
+    description: string | null;
+    items: QuizQuestionItem[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface QuizReveal {
+    id: string;
+    quizId: string;
+    questionId: string;
     title: string;
     description: string | null;
     items: QuizQuestionItem[];

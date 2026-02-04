@@ -1,5 +1,5 @@
 import { ApiResponse } from "../../../types/api";
-import { Quiz } from "../../../types/quizes";
+import { Quiz, QuizReveal } from "./quizes";
 
 export type CreateGameResponse = ApiResponse<{
     gameId: string;
@@ -8,12 +8,23 @@ export type CreateGameResponse = ApiResponse<{
 export type GetGameResponse = ApiResponse<Game>;
 
 export type AnswerGameQuizResponse = ApiResponse<{
+    quizReveal: QuizReveal | null,
+
+    givenAnswers: {
+        value: string;
+    }[],
+    correctAnswers: {
+        value: string;
+    }[],
     isCorrect: boolean,
-    pointsEarned: number,
-    correctAnswer?: string,
-    gameCompleted: boolean,
-    totalScore: number,
+
+    isGameCompleted: boolean,
     completedQuizes: number,
+    totalQuizes: number,
+
+    totalScore: number,
+    pointsEarned: number,
+
 }>;
 
 export interface Game {

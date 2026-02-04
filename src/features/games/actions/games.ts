@@ -21,12 +21,14 @@ export const getGame = async (gameId: string) => {
     });
 }
 
-export const asnwerGameQuiz = async (gameId: string, gameQuizId: string, answer: string) => {
+export const asnwerGameQuiz = async (gameId: string, gameQuizId: string, answers: {
+    value: string;
+}[]) => {
     const mqzFetchInstance = await getMqzAPIFetchInstance();
     return mqzFetchInstance<AnswerGameQuizResponse>(`/games/${gameId}/quizes/${gameQuizId}/answer`, {
         method: "POST",
         body: {
-            answer,
+            answers
         },
         credentials: "include",
     })

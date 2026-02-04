@@ -34,8 +34,12 @@ export const useGetGame = (gameId: string) => {
 
 export const useAnswerGameQuiz = () => {
     return useMutation({
-        mutationFn: async ({ gameId, gameQuizId, answer }: { gameId: string; gameQuizId: string; answer: string }) => {
-            const { data, error } = await asnwerGameQuiz(gameId, gameQuizId, answer);
+        mutationFn: async ({ gameId, gameQuizId, answers }: {
+            gameId: string; gameQuizId: string; answers: {
+                value: string;
+            }[]
+        }) => {
+            const { data, error } = await asnwerGameQuiz(gameId, gameQuizId, answers);
             if (error) {
                 throw new Error(error.message);
             }
