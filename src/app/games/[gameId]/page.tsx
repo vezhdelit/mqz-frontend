@@ -110,8 +110,8 @@ export default function Page({
   };
 
   const handleNextQuiz = () => {
-    if (currentQuizIndex < (game?.gameQuizes.length || 0) - 1) {
-      setCurrentQuizIndex((prev) => prev + 1);
+    if (currentQuizIndex !== null && currentQuizIndex < (game?.gameQuizes.length || 0) - 1) {
+      setCurrentQuizIndex((prev) => (prev !== null ? prev + 1 : 0));
     }
   };
 
@@ -176,7 +176,7 @@ export default function Page({
       <div className="flex justify-between items-center">
         <div className="text-white">
           <span className="text-lg font-semibold">
-            Quiz {currentQuizIndex + 1} of {game.gameQuizes.length}
+            Quiz {currentQuizIndex !== null ? currentQuizIndex + 1 : 0} of {game.gameQuizes.length}
           </span>
         </div>
         <div
@@ -343,7 +343,8 @@ export default function Page({
           </Button>
         ) : (
           <>
-            {currentQuizIndex < game.gameQuizes.length - 1 ? (
+            {currentQuizIndex !== null &&
+            currentQuizIndex < game.gameQuizes.length - 1 ? (
               <Button onClick={handleNextQuiz} size="lg" className="px-8">
                 Next Quiz
               </Button>
