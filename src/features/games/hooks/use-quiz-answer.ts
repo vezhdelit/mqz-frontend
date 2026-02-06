@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
-import { Answer } from "@/types/answer";
-import { ExtendedQuizQuestionReveal } from "@/types/quiz-question-reveals";
+import type { Answer } from "@/types/answer";
+import type { ExtendedQuizQuestionReveal } from "@/types/quiz-question-reveals";
 import { useAnswerGameQuiz } from "@/features/games/hooks/use-games";
 
 interface AnswerResult {
@@ -10,6 +10,12 @@ interface AnswerResult {
   quizQuestionReveal: ExtendedQuizQuestionReveal | null;
 }
 
+/**
+ * Hook for managing quiz answer selection and submission
+ * @param gameId - The current game ID
+ * @param currentQuizIndex - The current quiz index
+ * @returns Answer state and control functions
+ */
 export function useQuizAnswer(gameId: string, currentQuizIndex: number | null) {
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -19,21 +25,23 @@ export function useQuizAnswer(gameId: string, currentQuizIndex: number | null) {
 
   // Reset state when quiz changes
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedAnswers([]);
     setIsAnswered(false);
     setAnswerResult(null);
   }, [currentQuizIndex]);
 
-  const toggleAnswer = useCallback((answerId: string) => {
-    if (isAnswered) return;
+  const toggleAnswer = useCallback(
+    (answerId: string) => {
+      if (isAnswered) return;
 
-    setSelectedAnswers((prev) =>
-      prev.includes(answerId)
-        ? prev.filter((id) => id !== answerId)
-        : [...prev, answerId]
-    );
-  }, [isAnswered]);
+      setSelectedAnswers((prev) =>
+        prev.includes(answerId)
+          ? prev.filter((id) => id !== answerId)
+          : [...prev, answerId]
+      );
+    },
+    [isAnswered]
+  );
 
   const submitAnswer = useCallback(
     async (gameQuizId: string) => {

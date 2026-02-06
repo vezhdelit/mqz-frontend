@@ -1,6 +1,7 @@
 import Image from "next/image";
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { ExtendedQuizOption } from "@/types/quiz-options";
+import type { ExtendedQuizOption } from "@/types/quiz-options";
 import { cn } from "@/lib/utils";
 import { IoIosCheckmarkCircle, IoIosCloseCircle } from "react-icons/io";
 
@@ -13,7 +14,10 @@ interface QuizOptionProps {
   onSelect: (optionId: string) => void;
 }
 
-export function QuizOption({
+/**
+ * Individual quiz option card with selection and feedback states
+ */
+export const QuizOption = memo(function QuizOption({
   option,
   isSelected,
   isAnswered,
@@ -21,18 +25,28 @@ export function QuizOption({
   isGiven,
   onSelect,
 }: QuizOptionProps) {
+  const handleClick = () => {
+    if (!isAnswered) {
+      onSelect(option.id);
+    }
+  };
+
+  const cardStyles = cn(
+    "transition-all duration-500",
+    !isAnswered && "cursor-pointer hover:scale-105",
+    isSelected && !isAnswered && "ring-2 ring-blue-500",
+    isAnswered &&
+      isCorrect &&
+      "ring-2 ring-green-500 bg-green-500/20 animate-in fade-in zoom-in-95 duration-500",
+    isAnswered &&
+      isGiven &&
+      !isCorrect &&
+      "ring-2 ring-red-500 bg-red-500/20 animate-in fade-in zoom-in-95 duration-500",
+    isAnswered && "cursor-default"
+  );
+
   return (
-    <Card
-      className={cn(
-        "transition-all duration-500",
-        !isAnswered && "cursor-pointer hover:scale-105",
-        isSelected && !isAnswered && "ring-2 ring-blue-500",
-        isAnswered && isCorrect && "ring-2 ring-green-500 bg-green-500/20 animate-in fade-in zoom-in-95 duration-500",
-        isAnswered && isGiven && !isCorrect && "ring-2 ring-red-500 bg-red-500/20 animate-in fade-in zoom-in-95 duration-500",
-        isAnswered && "cursor-default"
-      )}
-      onClick={() => !isAnswered && onSelect(option.id)}
-    >
+    <Card className={cardStyles} onClick={handleClick}>
       <CardContent className="p-4 relative">
         {option.item && (
           <>
@@ -53,16 +67,33 @@ export function QuizOption({
           </>
         )}
         {isAnswered && (
-          <div className="absolute top-2 right-2 animate-in zoom-in-50 duration-500 delay-200">
-            {isCorrect && (
-              <IoIosCheckmarkCircle className="text-green-500 text-3xl" />
-            )}
-            {isGiven && !isCorrect && (
-              <IoIosCloseCircle className="text-red-500 text-3xl" />
-            )}
-          </div>
+          <AnswerFeedback isCorrect={isCorrect} isGiven={isGiven} />
         )}
       </CardContent>
     </Card>
+  );
+});
+
+interface AnswerFeedbackProps {
+  isCorrect: boolean;
+  isGiven: boolean;
+}
+
+function AnswerFeedback({ isCorrect, isGiven }: AnswerFeedbackProps) {
+  return (
+    <div className="absolute top-2 right-2 animate-in zoom-in-50 duration-500 delay-200">
+      {isCorrect && (
+        <IoIosCheckmarkCircle
+          className="text-green-500 text-3xl"
+          aria-label="Correct answer"
+        />
+      )}
+      {isGiven && !isCorrect && (
+        <IoIosCloseCircle
+          className="text-red-500 text-3xl"
+          aria-label="Incorrect answer"
+        />
+      )}
+    </div>
   );
 }

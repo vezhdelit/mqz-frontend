@@ -1,12 +1,14 @@
 import { useEffect, useState, useCallback, useRef } from "react";
+import { QUIZ_TIME_LIMIT_SECONDS } from "@/lib/constants";
 
-const QUIZ_TIME_LIMIT = 60; // 1 minute in seconds
-
-export function useQuizTimer(
-  isActive: boolean,
-  onTimeUp: () => void
-) {
-  const [timeRemaining, setTimeRemaining] = useState(QUIZ_TIME_LIMIT);
+/**
+ * Hook for managing quiz timer countdown
+ * @param isActive - Whether the timer should be active
+ * @param onTimeUp - Callback when time runs out
+ * @returns Timer state and reset function
+ */
+export function useQuizTimer(isActive: boolean, onTimeUp: () => void) {
+  const [timeRemaining, setTimeRemaining] = useState(QUIZ_TIME_LIMIT_SECONDS);
   const onTimeUpRef = useRef(onTimeUp);
 
   // Keep the ref updated
@@ -15,7 +17,7 @@ export function useQuizTimer(
   }, [onTimeUp]);
 
   const reset = useCallback(() => {
-    setTimeRemaining(QUIZ_TIME_LIMIT);
+    setTimeRemaining(QUIZ_TIME_LIMIT_SECONDS);
   }, []);
 
   useEffect(() => {

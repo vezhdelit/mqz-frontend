@@ -10,6 +10,9 @@ import { QuizQuestion } from "../../../features/games/components/quiz-question";
 import { QuizOptionsGrid } from "../../../features/games/components/quiz-options-grid";
 import { QuizActions } from "../../../features/games/components/quiz-actions";
 import { GameCompleted } from "../../../features/games/components/game-completed";
+import { ErrorState } from "@/components/error-state";
+import { LoadingState } from "@/components/loading-state";
+import { ERROR_MESSAGES } from "@/lib/constants";
 
 export default function Page({
   params,
@@ -17,7 +20,7 @@ export default function Page({
   params: Promise<{ gameId: string }>;
 }) {
   const { gameId } = use(params);
-  const { data: game, error } = useGetGame(gameId);
+  const { data: game, error, isLoading } = useGetGame(gameId);
 
   const { currentQuizIndex, currentGameQuiz, goToNextQuiz, hasNextQuiz } =
     useQuizNavigation(game);
@@ -39,7 +42,7 @@ export default function Page({
 
   const { timeRemaining, reset: resetTimer } = useQuizTimer(
     !isAnswered && !!currentGameQuiz && !currentGameQuiz.isCompleted,
-    handleTimeUp,
+    handleTimeUp
   );
 
   const handleSubmit = useCallback(async () => {
@@ -60,23 +63,16 @@ export default function Page({
   // Error state
   if (error) {
     return (
-      <div className="flex flex-col gap-5 flex-1">
-        <h1 className="text-3xl font-bold text-white mx-auto w-full text-center">
-          Game not found
-        </h1>
-      </div>
+      <ErrorState
+        title={ERROR_MESSAGES.GAME.NOT_FOUND}
+        message="The game you're looking for doesn't exist or has been removed."
+      />
     );
   }
 
   // Loading state
-  if (!game || currentQuizIndex === null || !currentGameQuiz) {
-    return (
-      <div className="flex flex-col gap-5 flex-1">
-        <h1 className="text-3xl font-bold text-white mx-auto w-full text-center">
-          Loading...
-        </h1>
-      </div>
-    );
+  if (isLoading || !game || currentQuizIndex === null || !currentGameQuiz) {
+    return <LoadingState message="Loading game..." />;
   }
 
   // Game completed state

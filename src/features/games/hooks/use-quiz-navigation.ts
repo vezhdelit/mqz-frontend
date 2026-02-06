@@ -1,24 +1,33 @@
-import { useState, useEffect, useCallback } from "react";
-import { ExtendedGame } from "@/types/games";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import type { ExtendedGame } from "@/types/games";
 
+/**
+ * Hook for managing quiz navigation state
+ * @param game - The current game data
+ * @returns Navigation state and controls
+ */
 export function useQuizNavigation(game: ExtendedGame | undefined) {
   const [currentQuizIndex, setCurrentQuizIndex] = useState<number | null>(null);
 
+  // Initialize current quiz index
   useEffect(() => {
     if (!game || currentQuizIndex !== null) return;
+
+    let initialIndex = 0;
 
     if (game.currentGameQuizId) {
       const index = game.gameQuizes.findIndex(
         (gq) => gq.id === game.currentGameQuizId
       );
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCurrentQuizIndex(index !== -1 ? index : 0);
+      initialIndex = index !== -1 ? index : 0;
     } else {
       const firstIncompleteIndex = game.gameQuizes.findIndex(
         (gq) => !gq.isCompleted
       );
-      setCurrentQuizIndex(firstIncompleteIndex !== -1 ? firstIncompleteIndex : 0);
+      initialIndex = firstIncompleteIndex !== -1 ? firstIncompleteIndex : 0;
     }
+
+    setCurrentQuizIndex(initialIndex);
   }, [game, currentQuizIndex]);
 
   const goToNextQuiz = useCallback(() => {
@@ -30,13 +39,21 @@ export function useQuizNavigation(game: ExtendedGame | undefined) {
     }
   }, [currentQuizIndex, game]);
 
-  const hasNextQuiz = currentQuizIndex !== null && game
-    ? currentQuizIndex < game.gameQuizes.length - 1
-    : false;
+  const hasNextQuiz = useMemo(
+    () =>
+      currentQuizIndex !== null && game
+        ? currentQuizIndex < game.gameQuizes.length - 1
+        : false,
+    [currentQuizIndex, game]
+  );
 
-  const currentGameQuiz = currentQuizIndex !== null && game
-    ? game.gameQuizes[currentQuizIndex]
-    : undefined;
+  const currentGameQuiz = useMemo(
+    () =>
+      currentQuizIndex !== null && game
+        ? game.gameQuizes[currentQuizIndex]
+        : undefined,
+    [currentQuizIndex, game]
+  );
 
   return {
     currentQuizIndex,

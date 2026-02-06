@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { formatTime } from "@/lib/format";
 
 interface QuizHeaderProps {
   currentQuizNumber: number;
@@ -6,16 +7,17 @@ interface QuizHeaderProps {
   timeRemaining: number;
 }
 
+const TIME_CRITICAL_THRESHOLD = 10;
+
+/**
+ * Display quiz progress and countdown timer
+ */
 export function QuizHeader({
   currentQuizNumber,
   totalQuizes,
   timeRemaining,
 }: QuizHeaderProps) {
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
+  const isCritical = timeRemaining <= TIME_CRITICAL_THRESHOLD;
 
   return (
     <div className="flex justify-between items-center">
@@ -26,11 +28,13 @@ export function QuizHeader({
       </div>
       <div
         className={cn(
-          "text-2xl font-bold px-4 py-2 rounded-lg",
-          timeRemaining <= 10
-            ? "text-red-500 bg-red-500/10"
+          "text-2xl font-bold px-4 py-2 rounded-lg transition-colors",
+          isCritical
+            ? "text-red-500 bg-red-500/10 animate-pulse"
             : "text-white bg-white/10"
         )}
+        role="timer"
+        aria-label={`Time remaining: ${formatTime(timeRemaining)}`}
       >
         {formatTime(timeRemaining)}
       </div>

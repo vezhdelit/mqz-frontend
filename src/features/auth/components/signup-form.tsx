@@ -1,29 +1,28 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSignUp } from "../hooks/use-auth";
 import { useRouter } from "next/navigation";
+import { useForm } from "@/hooks/use-form";
+import { ROUTES, ERROR_MESSAGES, PASSWORD_MIN_LENGTH } from "@/lib/constants";
 
 export function SignUpForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
   const signUp = useSignUp();
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    try {
-      await signUp.mutateAsync({ email, password, username });
-      router.push("/");
-    } catch (error) {
-      console.error("Sign up failed:", error);
-    }
-  };
+  const { values, isSubmitting, error, handleChange, handleSubmit } = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+      username: "",
+    },
+    onSubmit: async (formValues) => {
+      await signUp.mutateAsync(formValues);
+      router.push(ROUTES.HOME);
+    },
+  });
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
@@ -33,8 +32,9 @@ export function SignUpForm() {
           id="username"
           type="text"
           placeholder="Choose a username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={values.username}
+          onChange={(e) => handleChange("username", e.target.value)}
+          disabled={isSubmitting}
           required
         />
       </div>
@@ -45,8 +45,9 @@ export function SignUpForm() {
           id="email"
           type="email"
           placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={values.email}
+          onChange={(e) => handleChange("email", e.target.value)}
+          disabled={isSubmitting}
           required
         />
       </div>
@@ -57,25 +58,26 @@ export function SignUpForm() {
           id="password"
           type="password"
           placeholder="Create a password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={values.password}
+          onChange={(e) => handleChange("password", e.target.value)}
+          disabled={isSubmitting}
           required
-          minLength={6}
+          minLength={PASSWORD_MIN_LENGTH}
         />
       </div>
 
-      {signUp.isError && (
-        <div className="text-red-500 text-sm">
-          {signUp.error?.message || "Failed to sign up"}
+      {error && (
+        <div className="text-red-500 text-sm" role="alert">
+          {error || ERROR_MESSAGES.AUTH.SIGNUP_FAILED}
         </div>
       )}
 
       <Button 
         type="submit" 
-        disabled={signUp.isPending}
+        disabled={isSubmitting}
         className="w-full"
       >
-        {signUp.isPending ? "Creating account..." : "Sign Up"}
+        {isSubmitting ? "Creating account..." : "Sign Up"}
       </Button>
     </form>
   );

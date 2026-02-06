@@ -1,28 +1,27 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useSignIn } from "../hooks/use-auth";
 import { useRouter } from "next/navigation";
+import { useForm } from "@/hooks/use-form";
+import { ROUTES, ERROR_MESSAGES } from "@/lib/constants";
 
 export function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const signIn = useSignIn();
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    try {
-      await signIn.mutateAsync({ email, password });
-      router.push("/");
-    } catch (error) {
-      console.error("Login failed:", error);
-    }
-  };
+  const { values, isSubmitting, error, handleChange, handleSubmit } = useForm({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    onSubmit: async (formValues) => {
+      await signIn.mutateAsync(formValues);
+      router.push(ROUTES.HOME);
+    },
+  });
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
@@ -32,8 +31,9 @@ export function LoginForm() {
           id="email"
           type="email"
           placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={values.email}
+          onChange={(e) => handleChange("email", e.target.value)}
+          disabled={isSubmitting}
           required
         />
       </div>
@@ -44,24 +44,25 @@ export function LoginForm() {
           id="password"
           type="password"
           placeholder="Enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={values.password}
+          onChange={(e) => handleChange("password", e.target.value)}
+          disabled={isSubmitting}
           required
         />
       </div>
 
-      {signIn.isError && (
-        <div className="text-red-500 text-sm">
-          {signIn.error?.message || "Failed to sign in"}
+      {error && (
+        <div className="text-red-500 text-sm" role="alert">
+          {error || ERROR_MESSAGES.AUTH.LOGIN_FAILED}
         </div>
       )}
 
       <Button 
         type="submit" 
-        disabled={signIn.isPending}
+        disabled={isSubmitting}
         className="w-full"
       >
-        {signIn.isPending ? "Signing in..." : "Sign In"}
+        {isSubmitting ? "Signing in..." : "Sign In"}
       </Button>
     </form>
   );
