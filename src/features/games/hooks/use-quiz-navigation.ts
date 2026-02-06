@@ -11,6 +11,7 @@ export function useQuizNavigation(game: ExtendedGame | undefined) {
       const index = game.gameQuizes.findIndex(
         (gq) => gq.id === game.currentGameQuizId
       );
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentQuizIndex(index !== -1 ? index : 0);
     } else {
       const firstIncompleteIndex = game.gameQuizes.findIndex(

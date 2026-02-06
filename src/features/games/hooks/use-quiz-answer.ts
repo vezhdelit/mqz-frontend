@@ -19,6 +19,7 @@ export function useQuizAnswer(gameId: string, currentQuizIndex: number | null) {
 
   // Reset state when quiz changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSelectedAnswers([]);
     setIsAnswered(false);
     setAnswerResult(null);
