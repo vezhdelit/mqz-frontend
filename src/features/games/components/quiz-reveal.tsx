@@ -8,7 +8,7 @@ interface QuizRevealProps {
 
 export function QuizReveal({ reveal }: QuizRevealProps) {
   return (
-    <Card className="bg-blue-500/20 border-blue-500/50">
+    <Card className="bg-blue-500/20 border-blue-500/50 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <CardContent className="p-6">
         <h3 className="text-xl font-bold text-white mb-2">{reveal.title}</h3>
         {reveal.description && (

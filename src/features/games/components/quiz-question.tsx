@@ -1,14 +1,19 @@
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { ExtendedQuizQuestion } from "@/types/quiz-questions";
+import { ExtendedQuizQuestionReveal } from "@/types/quiz-question-reveals";
+import { useState, useRef, useEffect } from 'react'
+import autoAnimate from '@formkit/auto-animate'
 
 interface QuizQuestionProps {
   question: ExtendedQuizQuestion;
+  isReavealed?: boolean;
+  questionReveal?: ExtendedQuizQuestionReveal | null;
 }
 
 export function QuizQuestion({ question }: QuizQuestionProps) {
   return (
-    <Card className="bg-white/10 border-white/20">
+    <Card className="bg-white/10 border-white/20 animate-in fade-in slide-in-from-top-4 duration-500">
       <CardContent className="p-6">
         <h2 className="text-2xl font-bold text-white mb-2">{question.title}</h2>
         {question.description && (

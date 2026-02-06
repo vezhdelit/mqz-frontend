@@ -24,11 +24,11 @@ export function QuizOption({
   return (
     <Card
       className={cn(
-        "transition-all",
+        "transition-all duration-500",
         !isAnswered && "cursor-pointer hover:scale-105",
         isSelected && !isAnswered && "ring-2 ring-blue-500",
-        isAnswered && isCorrect && "ring-2 ring-green-500 bg-green-500/20",
-        isAnswered && isGiven && !isCorrect && "ring-2 ring-red-500 bg-red-500/20",
+        isAnswered && isCorrect && "ring-2 ring-green-500 bg-green-500/20 animate-in fade-in zoom-in-95 duration-500",
+        isAnswered && isGiven && !isCorrect && "ring-2 ring-red-500 bg-red-500/20 animate-in fade-in zoom-in-95 duration-500",
         isAnswered && "cursor-default"
       )}
       onClick={() => !isAnswered && onSelect(option.id)}
@@ -53,7 +53,7 @@ export function QuizOption({
           </>
         )}
         {isAnswered && (
-          <div className="absolute top-2 right-2">
+          <div className="absolute top-2 right-2 animate-in zoom-in-50 duration-500 delay-200">
             {isCorrect && (
               <IoIosCheckmarkCircle className="text-green-500 text-3xl" />
             )}

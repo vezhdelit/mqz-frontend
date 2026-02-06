@@ -8,7 +8,6 @@ import { useQuizTimer } from "../../../features/games/hooks/use-quiz-timer";
 import { QuizHeader } from "../../../features/games/components/quiz-header";
 import { QuizQuestion } from "../../../features/games/components/quiz-question";
 import { QuizOptionsGrid } from "../../../features/games/components/quiz-options-grid";
-import { QuizReveal } from "../../../features/games/components/quiz-reveal";
 import { QuizActions } from "../../../features/games/components/quiz-actions";
 import { GameCompleted } from "../../../features/games/components/game-completed";
 
@@ -20,12 +19,8 @@ export default function Page({
   const { gameId } = use(params);
   const { data: game, error } = useGetGame(gameId);
 
-  const {
-    currentQuizIndex,
-    currentGameQuiz,
-    goToNextQuiz,
-    hasNextQuiz,
-  } = useQuizNavigation(game);
+  const { currentQuizIndex, currentGameQuiz, goToNextQuiz, hasNextQuiz } =
+    useQuizNavigation(game);
 
   const {
     selectedAnswers,
@@ -44,7 +39,7 @@ export default function Page({
 
   const { timeRemaining, reset: resetTimer } = useQuizTimer(
     !isAnswered && !!currentGameQuiz && !currentGameQuiz.isCompleted,
-    handleTimeUp
+    handleTimeUp,
   );
 
   const handleSubmit = useCallback(async () => {
@@ -111,7 +106,13 @@ export default function Page({
         timeRemaining={timeRemaining}
       />
 
-      {currentQuiz.question && <QuizQuestion question={currentQuiz.question} />}
+      {currentQuiz.question && (
+        <QuizQuestion
+          question={currentQuiz.question}
+          questionReveal={answerResult?.quizQuestionReveal}
+          isReavealed={isAnswered}
+        />
+      )}
 
       <QuizOptionsGrid
         options={currentQuiz.options}
@@ -121,10 +122,6 @@ export default function Page({
         givenAnswers={answerResult?.givenAnswers || []}
         onSelectAnswer={toggleAnswer}
       />
-
-      {answerResult?.quizQuestionReveal && (
-        <QuizReveal reveal={answerResult.quizQuestionReveal} />
-      )}
 
       <QuizActions
         isAnswered={isAnswered}
