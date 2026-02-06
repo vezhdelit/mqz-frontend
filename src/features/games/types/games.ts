@@ -1,62 +1,22 @@
-import { ApiResponse } from "../../../types/api";
-import { Quiz, QuizReveal } from "./quizes";
+import { Answer } from "@/types/answer";
+import { ApiResponse } from "@/types/api";
+import { ExtendedGame } from "@/types/games";
+import { ExtendedQuizQuestionReveal } from "@/types/quiz-question-reveals";
 
 export type CreateGameResponse = ApiResponse<{
     gameId: string;
 }>;
 
-export type GetGameResponse = ApiResponse<Game>;
+export type GetGameResponse = ApiResponse<ExtendedGame>;
 
 export type AnswerGameQuizResponse = ApiResponse<{
-    quizReveal: QuizReveal | null,
+    quizQuestionReveal: ExtendedQuizQuestionReveal | null;
 
-    givenAnswers: {
-        value: string;
-    }[],
-    correctAnswers: {
-        value: string;
-    }[],
-    isCorrect: boolean,
+    givenAnswers: Answer[];
+    correctAnswers: Answer[];
+    isCorrect: boolean;
 
-    isGameCompleted: boolean,
-    completedQuizes: number,
-    totalQuizes: number,
-
-    totalScore: number,
-    pointsEarned: number,
-
-}>;
-
-export interface Game {
-    id: string;
-    userId: string;
-    difficulty: 'easy' | 'medium' | 'hard';
-    theme: string;
-    status: string;
-    totalQuizes: number;
+    isGameCompleted: boolean;
     completedQuizes: number;
-    score: number;
-    createdAt: string;
-    updatedAt: string;
-    completedAt: string | null;
-    expiresAt: string | null;
-    archivedAt: string | null;
-    gameQuizes: GameQuiz[];
-}
-
-export interface GameQuiz {
-    id: string;
-    gameId: string;
-    quizId: string;
-    order: number;
-    isCompleted: boolean;
-    isCorrect: boolean | null;
-    userAnswers: {
-        value: string;
-    }[] | null;
-    pointsEarned: number;
-    timeSpentSeconds: number | null;
-    createdAt: string;
-    completedAt: string | null;
-    quiz: Quiz;
-}
+    totalQuizes: number;
+}>;

@@ -1,5 +1,5 @@
 import { getMqzAPIFetchInstance } from "@/lib/mqz-api";
-import { AnswerGameQuizResponse, CreateGameResponse, Game } from "@/features/games/types/games";
+import { AnswerGameQuizResponse, CreateGameResponse, GetGameResponse } from "../types/games";
 
 export const createGame = async () => {
     const mqzFetchInstance = await getMqzAPIFetchInstance();
@@ -15,7 +15,7 @@ export const createGame = async () => {
 
 export const getGame = async (gameId: string) => {
     const mqzFetchInstance = await getMqzAPIFetchInstance();
-    return mqzFetchInstance<{ data: Game }>(`/games/${gameId}`, {
+    return mqzFetchInstance<GetGameResponse>(`/games/${gameId}`, {
         method: "GET",
         credentials: "include",
     });
