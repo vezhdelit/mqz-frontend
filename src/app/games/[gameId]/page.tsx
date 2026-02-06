@@ -9,12 +9,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { Answer } from "@/types/answer";
-import { ExtendedGameQuiz } from "@/types/game-quizes";
-import { ExtendedGame, Game } from "@/types/games";
-import { QuizAnswer } from "@/types/quiz-answers";
-import { ExtendedQuizOption } from "@/types/quiz-options";
 import { ExtendedQuizQuestionReveal } from "@/types/quiz-question-reveals";
-import { ExtendedQuizQuestion } from "@/types/quiz-questions";
 
 import Image from "next/image";
 import { use, useState, useEffect } from "react";
@@ -29,10 +24,10 @@ export default function Page({
 }) {
   const { gameId } = use(params);
 
-  const { data: game, error, refetch } = useGetGame(gameId);
+  const { data: game, error } = useGetGame(gameId);
   const answerGameQuiz = useAnswerGameQuiz();
 
-  const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
+  const [currentQuizIndex, setCurrentQuizIndex] = useState<number | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [timeRemaining, setTimeRemaining] = useState(QUIZ_TIME_LIMIT);
   const [isAnswered, setIsAnswered] = useState(false);
@@ -43,7 +38,29 @@ export default function Page({
     quizQuestionReveal: ExtendedQuizQuestionReveal | null;
   } | null>(null);
 
-  const currentGameQuiz = game?.gameQuizes[currentQuizIndex];
+  // Initialize currentQuizIndex based on game.currentGameQuizId
+  useEffect(() => {
+    if (!game || currentQuizIndex !== null) return;
+
+    if (game.currentGameQuizId) {
+      // Find the index of the current game quiz
+      const index = game.gameQuizes.findIndex(
+        (gq) => gq.id === game.currentGameQuizId,
+      );
+      setCurrentQuizIndex(index !== -1 ? index : 0);
+    } else {
+      // No current quiz set, start from first incomplete quiz
+      const firstIncompleteIndex = game.gameQuizes.findIndex(
+        (gq) => !gq.isCompleted,
+      );
+      setCurrentQuizIndex(
+        firstIncompleteIndex !== -1 ? firstIncompleteIndex : 0,
+      );
+    }
+  }, [game, currentQuizIndex]);
+
+  const currentGameQuiz =
+    currentQuizIndex !== null ? game?.gameQuizes[currentQuizIndex] : undefined;
   const currentQuiz = currentGameQuiz?.quiz;
 
   // Timer logic
@@ -87,9 +104,6 @@ export default function Page({
       });
 
       setAnswerResult(result);
-
-      // Refetch game data to update completion status
-      await refetch();
     } catch (error) {
       console.error("Error submitting answer:", error);
     }
@@ -140,7 +154,10 @@ export default function Page({
   }
 
   // Game completed
-  if (game.status === "completed" || game.completedQuizes === game.totalQuizes) {
+  if (
+    game.status === "completed" ||
+    game.completedQuizes === game.totalQuizes
+  ) {
     return (
       <div className="flex flex-col gap-5 flex-1 items-center justify-center">
         <h1 className="text-3xl font-bold text-white text-center">
@@ -165,7 +182,9 @@ export default function Page({
         <div
           className={cn(
             "text-2xl font-bold px-4 py-2 rounded-lg",
-            timeRemaining <= 10 ? "text-red-500 bg-red-500/10" : "text-white bg-white/10"
+            timeRemaining <= 10
+              ? "text-red-500 bg-red-500/10"
+              : "text-white bg-white/10",
           )}
         >
           {formatTime(timeRemaining)}
@@ -180,26 +199,31 @@ export default function Page({
               {currentQuiz.question.title}
             </h2>
             {currentQuiz.question.description && (
-              <p className="text-white/80">{currentQuiz.question.description}</p>
+              <p className="text-white/80">
+                {currentQuiz.question.description}
+              </p>
             )}
-            {currentQuiz.question.items && currentQuiz.question.items.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-4">
-                {currentQuiz.question.items.map((item) => (
-                  <div key={item.id}>
-                    {item.imageUrl && (
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.text || "Quiz image"}
-                        width={400}
-                        height={300}
-                        className="rounded-lg"
-                      />
-                    )}
-                    {item.text && <p className="text-white mt-2">{item.text}</p>}
-                  </div>
-                ))}
-              </div>
-            )}
+            {currentQuiz.question.items &&
+              currentQuiz.question.items.length > 0 && (
+                <div className="mt-4 flex flex-wrap gap-4">
+                  {currentQuiz.question.items.map((item) => (
+                    <div key={item.id}>
+                      {item.imageUrl && (
+                        <Image
+                          src={item.imageUrl}
+                          alt={item.text || "Quiz image"}
+                          width={400}
+                          height={300}
+                          className="rounded-lg"
+                        />
+                      )}
+                      {item.text && (
+                        <p className="text-white mt-2">{item.text}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
           </CardContent>
         </Card>
       )}
@@ -210,11 +234,11 @@ export default function Page({
           const isSelected = selectedAnswers.includes(option.id);
           const isCorrect =
             answerResult?.correctAnswers.some(
-              (ans) => "quizOptionId" in ans && ans.quizOptionId === option.id
+              (ans) => "quizOptionId" in ans && ans.quizOptionId === option.id,
             ) || false;
           const isGiven =
             answerResult?.givenAnswers.some(
-              (ans) => "quizOptionId" in ans && ans.quizOptionId === option.id
+              (ans) => "quizOptionId" in ans && ans.quizOptionId === option.id,
             ) || false;
 
           return (
@@ -223,9 +247,14 @@ export default function Page({
               className={cn(
                 "cursor-pointer transition-all hover:scale-105",
                 isSelected && !isAnswered && "ring-2 ring-blue-500",
-                isAnswered && isCorrect && "ring-2 ring-green-500 bg-green-500/20",
-                isAnswered && isGiven && !isCorrect && "ring-2 ring-red-500 bg-red-500/20",
-                isAnswered ? "cursor-default" : "cursor-pointer"
+                isAnswered &&
+                  isCorrect &&
+                  "ring-2 ring-green-500 bg-green-500/20",
+                isAnswered &&
+                  isGiven &&
+                  !isCorrect &&
+                  "ring-2 ring-red-500 bg-red-500/20",
+                isAnswered ? "cursor-default" : "cursor-pointer",
               )}
               onClick={() => handleAnswerSelect(option.id)}
             >
@@ -272,7 +301,9 @@ export default function Page({
               {answerResult.quizQuestionReveal.title}
             </h3>
             {answerResult.quizQuestionReveal.description && (
-              <p className="text-white/90">{answerResult.quizQuestionReveal.description}</p>
+              <p className="text-white/90">
+                {answerResult.quizQuestionReveal.description}
+              </p>
             )}
             {answerResult.quizQuestionReveal.items &&
               answerResult.quizQuestionReveal.items.length > 0 && (
@@ -288,7 +319,9 @@ export default function Page({
                           className="rounded-lg"
                         />
                       )}
-                      {item.text && <p className="text-white mt-2">{item.text}</p>}
+                      {item.text && (
+                        <p className="text-white mt-2">{item.text}</p>
+                      )}
                     </div>
                   ))}
                 </div>
