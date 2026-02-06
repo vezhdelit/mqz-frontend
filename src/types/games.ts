@@ -8,7 +8,6 @@ export interface Game {
     status: string;
     totalQuizes: number;
     completedQuizes: number;
-    score: number;
     createdAt: string;
     updatedAt: string;
     completedAt: string | null;
@@ -17,4 +16,5 @@ export interface Game {
 }
 export type ExtendedGame = Game & {
     gameQuizes: ExtendedGameQuiz[];
+    currentGameQuizId: ExtendedGameQuiz["id"] | null;
 }

@@ -39,13 +39,5 @@ export default function Page({
     );
   }
 
-  return (
-    <div className="flex flex-col gap-5 flex-1">
-      <h1 className="text-3xl font-bold text-white mx-auto w-full text-center">
-        Game
-      </h1>
-      <div className="flex flex-col gap-6">
-      </div>
-    </div>
-  );
+  return <div className="flex flex-col gap-5 flex-1"></div>;
 }
