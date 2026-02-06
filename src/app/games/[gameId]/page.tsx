@@ -110,7 +110,7 @@ export default function Page({
         <QuizQuestion
           question={currentQuiz.question}
           questionReveal={answerResult?.quizQuestionReveal}
-          isReavealed={isAnswered}
+          isRevealed={isAnswered}
         />
       )}
 
