@@ -27,9 +27,11 @@ export default function Page({
 
   const {
     selectedAnswers,
+    textInput,
     isAnswered,
     answerResult,
     toggleAnswer,
+    updateTextInput,
     submitAnswer,
     isSubmitting,
   } = useQuizAnswer(gameId, currentQuizIndex, currentGameQuiz?.quiz.answerType);
@@ -113,18 +115,27 @@ export default function Page({
       <QuizOptionsGrid
         options={currentQuiz.options}
         selectedAnswers={selectedAnswers}
+        textInput={textInput}
+        isCorrect={answerResult?.isCorrect || false}
         isAnswered={isAnswered}
         correctAnswers={answerResult?.correctAnswers || []}
         givenAnswers={answerResult?.givenAnswers || []}
         answerType={currentQuiz.answerType}
         onSelectAnswer={toggleAnswer}
+        onTextInputChange={updateTextInput}
       />
 
       <QuizActions
         isAnswered={isAnswered}
         hasNextQuiz={hasNextQuiz}
-        canSubmit={selectedAnswers.length > 0}
+        canSubmit={
+          currentQuiz.answerType === "text_input"
+            ? textInput.trim().length > 0
+            : selectedAnswers.length > 0
+        }
         isSubmitting={isSubmitting}
+        answerType={currentQuiz.answerType}
+        answerInstructions={currentQuiz.answerInstructions}
         onSubmit={handleSubmit}
         onNext={handleNext}
         onFinish={handleFinish}

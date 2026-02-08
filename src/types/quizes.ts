@@ -9,7 +9,8 @@ export interface Quiz {
     type: "blurred_poster" | string; // Using a union in case there are other types
     difficulty: "easy" | "medium" | "hard" | string;
     status: "active" | "inactive" | string;
-    answerType: "single_choice" | "multiple_choice";
+    answerType: "single_choice" | "multiple_choice" | "text_input"
+    answerInstructions?: string; // Optional instructions for answering the quiz
     createdAt: string; // ISO Date string
     updatedAt: string;
     activatedAt: string | null;

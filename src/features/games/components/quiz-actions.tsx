@@ -5,6 +5,8 @@ interface QuizActionsProps {
   hasNextQuiz: boolean;
   canSubmit: boolean;
   isSubmitting: boolean;
+  answerType: "single_choice" | "multiple_choice" | "text_input";
+  answerInstructions?: string;
   onSubmit: () => void;
   onNext: () => void;
   onFinish: () => void;
@@ -15,13 +17,24 @@ export function QuizActions({
   hasNextQuiz,
   canSubmit,
   isSubmitting,
+  answerType,
+  answerInstructions,
   onSubmit,
   onNext,
   onFinish,
 }: QuizActionsProps) {
   if (!isAnswered) {
+    const hintText = answerInstructions
+      ? answerInstructions
+      : answerType === "single_choice"
+        ? "Select one answer"
+        : answerType === "multiple_choice"
+          ? "Select all that apply"
+          : "Type your answer in the text field";
+
     return (
-      <div className="flex justify-center gap-4">
+      <div className="flex flex-col items-center gap-3">
+        <p className="text-white/70 text-sm font-medium">{hintText}</p>
         <Button
           onClick={onSubmit}
           disabled={!canSubmit || isSubmitting}

@@ -14,15 +14,16 @@ interface AnswerResult {
  * Hook for managing quiz answer selection and submission
  * @param gameId - The current game ID
  * @param currentQuizIndex - The current quiz index
- * @param answerType - The type of answer (single_choice or multiple_choice)
+ * @param answerType - The type of answer (single_choice, multiple_choice, or text_input)
  * @returns Answer state and control functions
  */
 export function useQuizAnswer(
   gameId: string,
   currentQuizIndex: number | null,
-  answerType: "single_choice" | "multiple_choice" = "multiple_choice"
+  answerType: "single_choice" | "multiple_choice" | "text_input" = "multiple_choice"
 ) {
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
+  const [textInput, setTextInput] = useState<string>("");
   const [isAnswered, setIsAnswered] = useState(false);
   const [answerResult, setAnswerResult] = useState<AnswerResult | null>(null);
 
@@ -31,6 +32,7 @@ export function useQuizAnswer(
   // Reset state when quiz changes
   useEffect(() => {
     setSelectedAnswers([]);
+    setTextInput("");
     setIsAnswered(false);
     setAnswerResult(null);
   }, [currentQuizIndex]);
@@ -44,7 +46,7 @@ export function useQuizAnswer(
         setSelectedAnswers((prev) =>
           prev.includes(answerId) ? [] : [answerId]
         );
-      } else {
+      } else if (answerType === "multiple_choice") {
         // For multiple choice, toggle selection
         setSelectedAnswers((prev) =>
           prev.includes(answerId)
@@ -52,8 +54,17 @@ export function useQuizAnswer(
             : [...prev, answerId]
         );
       }
+      // text_input doesn't use toggleAnswer
     },
     [isAnswered, answerType]
+  );
+
+  const updateTextInput = useCallback(
+    (text: string) => {
+      if (isAnswered) return;
+      setTextInput(text);
+    },
+    [isAnswered]
   );
 
   const submitAnswer = useCallback(
@@ -62,7 +73,11 @@ export function useQuizAnswer(
 
       setIsAnswered(true);
 
-      const answers = selectedAnswers.map((answer) => ({ value: answer }));
+      // For text_input, use the textInput value; for others, use selectedAnswers
+      const answers =
+        answerType === "text_input"
+          ? [{ value: textInput.trim() }]
+          : selectedAnswers.map((answer) => ({ value: answer }));
 
       try {
         const result = await answerGameQuizMutation.mutateAsync({
@@ -79,14 +94,16 @@ export function useQuizAnswer(
         throw error;
       }
     },
-    [gameId, selectedAnswers, isAnswered, answerGameQuizMutation]
+    [gameId, selectedAnswers, textInput, answerType, isAnswered, answerGameQuizMutation]
   );
 
   return {
     selectedAnswers,
+    textInput,
     isAnswered,
     answerResult,
     toggleAnswer,
+    updateTextInput,
     submitAnswer,
     isSubmitting: answerGameQuizMutation.isPending,
   };
