@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { ExtendedQuizOption } from "@/types/quiz-options";
 import { cn } from "@/lib/utils";
 import { IoIosCheckmarkCircle, IoIosCloseCircle } from "react-icons/io";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface QuizOptionProps {
   option: ExtendedQuizOption;
@@ -11,6 +12,7 @@ interface QuizOptionProps {
   isAnswered: boolean;
   isCorrect: boolean;
   isGiven: boolean;
+  answerType: "single_choice" | "multiple_choice";
   onSelect: (optionId: string) => void;
 }
 
@@ -23,6 +25,7 @@ export const QuizOption = memo(function QuizOption({
   isAnswered,
   isCorrect,
   isGiven,
+  answerType,
   onSelect,
 }: QuizOptionProps) {
   const handleClick = () => {
@@ -42,12 +45,23 @@ export const QuizOption = memo(function QuizOption({
       isGiven &&
       !isCorrect &&
       "ring-2 ring-red-500 bg-red-500/20 animate-in fade-in zoom-in-95 duration-500",
-    isAnswered && "cursor-default"
+    isAnswered && "cursor-default",
   );
 
   return (
     <Card className={cn(cardStyles, "py-5")} onClick={handleClick}>
-      <CardContent className="p-0 px-2.5 relative">
+      <CardContent className="p-0 px-2.5 relative flex flex-col items-center justify-center">
+        {/* Selection indicator */}
+        <div className="absolute left-3 md:left-5 z-10">
+          {answerType === "multiple_choice" && (
+            <Checkbox
+              checked={isSelected}
+              onCheckedChange={() => onSelect(option.id)}
+              disabled={isAnswered}
+            />
+          )}
+        </div>
+
         {option.item && (
           <>
             {option.item.imageUrl && (

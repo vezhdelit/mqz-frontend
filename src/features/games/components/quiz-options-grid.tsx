@@ -35,7 +35,6 @@ export function QuizOptionsGrid({
   // For text_input type, render text input instead of options
   if (answerType === "text_input") {
     // Check if the answer was correct by comparing text values
-    const userAnswer = givenAnswers.find((ga): ga is { value: string } => 'value' in ga);
     const correctAnswerObj = correctAnswers.find((ca): ca is { value: string } => 'value' in ca);
 
     const correctAnswer = correctAnswerObj?.value;
@@ -71,6 +70,7 @@ export function QuizOptionsGrid({
             isAnswered={isAnswered}
             isCorrect={isCorrect}
             isGiven={isGiven}
+            answerType={answerType}
             onSelect={onSelectAnswer}
           />
         );

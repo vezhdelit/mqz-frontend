@@ -38,7 +38,7 @@ export const QuizTextInput = memo(function QuizTextInput({
           disabled={isAnswered}
           placeholder="Type your answer here..."
           className={cn(
-            "w-full min-h-32 text-white resize-none",
+            "w-full text-white resize-none",
             isAnswered && "cursor-not-allowed opacity-70",
           )}
           maxLength={100}
@@ -53,7 +53,7 @@ export const QuizTextInput = memo(function QuizTextInput({
 
         {!isAnswered && (
           <div className="text-white/50 text-xs mt-2 text-right">
-            {value.length}/isCorrect characters
+            {value.length}/100 characters
           </div>
         )}
       </CardContent>
