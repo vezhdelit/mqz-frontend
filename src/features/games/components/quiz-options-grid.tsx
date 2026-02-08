@@ -9,6 +9,7 @@ interface QuizOptionsGridProps {
   isAnswered: boolean;
   correctAnswers: Answer[];
   givenAnswers: Answer[];
+  answerType: "single_choice" | "multiple_choice";
   onSelectAnswer: (answerId: string) => void;
 }
 
@@ -21,10 +22,15 @@ export function QuizOptionsGrid({
   isAnswered,
   correctAnswers,
   givenAnswers,
+  answerType,
   onSelectAnswer,
 }: QuizOptionsGridProps) {
+  const gridClassName = answerType === "single_choice" 
+    ? "grid grid-cols-1 md:grid-cols-2 gap-4" 
+    : "grid grid-cols-1 md:grid-cols-2 gap-4";
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className={gridClassName}>
       {options.map((option) => {
         const isSelected = selectedAnswers.includes(option.id);
         const isCorrect = isCorrectOption(option.id, correctAnswers);

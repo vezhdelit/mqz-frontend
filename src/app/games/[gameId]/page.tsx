@@ -32,7 +32,7 @@ export default function Page({
     toggleAnswer,
     submitAnswer,
     isSubmitting,
-  } = useQuizAnswer(gameId, currentQuizIndex);
+  } = useQuizAnswer(gameId, currentQuizIndex, currentGameQuiz?.quiz.answerType);
 
   const handleTimeUp = useCallback(() => {
     if (currentGameQuiz && !isAnswered) {
@@ -116,6 +116,7 @@ export default function Page({
         isAnswered={isAnswered}
         correctAnswers={answerResult?.correctAnswers || []}
         givenAnswers={answerResult?.givenAnswers || []}
+        answerType={currentQuiz.answerType}
         onSelectAnswer={toggleAnswer}
       />
 

@@ -14,9 +14,14 @@ interface AnswerResult {
  * Hook for managing quiz answer selection and submission
  * @param gameId - The current game ID
  * @param currentQuizIndex - The current quiz index
+ * @param answerType - The type of answer (single_choice or multiple_choice)
  * @returns Answer state and control functions
  */
-export function useQuizAnswer(gameId: string, currentQuizIndex: number | null) {
+export function useQuizAnswer(
+  gameId: string,
+  currentQuizIndex: number | null,
+  answerType: "single_choice" | "multiple_choice" = "multiple_choice"
+) {
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [isAnswered, setIsAnswered] = useState(false);
   const [answerResult, setAnswerResult] = useState<AnswerResult | null>(null);
@@ -34,13 +39,21 @@ export function useQuizAnswer(gameId: string, currentQuizIndex: number | null) {
     (answerId: string) => {
       if (isAnswered) return;
 
-      setSelectedAnswers((prev) =>
-        prev.includes(answerId)
-          ? prev.filter((id) => id !== answerId)
-          : [...prev, answerId]
-      );
+      if (answerType === "single_choice") {
+        // For single choice, replace selection or deselect if clicking the same option
+        setSelectedAnswers((prev) =>
+          prev.includes(answerId) ? [] : [answerId]
+        );
+      } else {
+        // For multiple choice, toggle selection
+        setSelectedAnswers((prev) =>
+          prev.includes(answerId)
+            ? prev.filter((id) => id !== answerId)
+            : [...prev, answerId]
+        );
+      }
     },
-    [isAnswered]
+    [isAnswered, answerType]
   );
 
   const submitAnswer = useCallback(
