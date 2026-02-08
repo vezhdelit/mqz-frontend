@@ -34,7 +34,7 @@ export const QuizOption = memo(function QuizOption({
   const cardStyles = cn(
     "transition-all duration-500",
     !isAnswered && "cursor-pointer hover:scale-105",
-    isSelected && !isAnswered && "ring-2 ring-blue-500",
+    isSelected && "ring-2 ring-blue-500",
     isAnswered &&
       isCorrect &&
       "ring-2 ring-green-500 bg-green-500/20 animate-in fade-in zoom-in-95 duration-500",
@@ -46,8 +46,8 @@ export const QuizOption = memo(function QuizOption({
   );
 
   return (
-    <Card className={cardStyles} onClick={handleClick}>
-      <CardContent className="p-4 relative">
+    <Card className={cn(cardStyles, "py-5")} onClick={handleClick}>
+      <CardContent className="p-0 px-2.5 relative">
         {option.item && (
           <>
             {option.item.imageUrl && (
@@ -60,7 +60,7 @@ export const QuizOption = memo(function QuizOption({
               />
             )}
             {option.item.text && (
-              <p className="text-white mt-2 text-center font-semibold">
+              <p className="text-white text-center font-semibold">
                 {option.item.text}
               </p>
             )}
@@ -81,7 +81,7 @@ interface AnswerFeedbackProps {
 
 function AnswerFeedback({ isCorrect, isGiven }: AnswerFeedbackProps) {
   return (
-    <div className="absolute top-2 right-2 animate-in zoom-in-50 duration-500 delay-200">
+    <div className="absolute right-3 md:right-5 animate-in zoom-in-50 duration-500 delay-200 top-1/2 -translate-y-1/2">
       {isCorrect && (
         <IoIosCheckmarkCircle
           className="text-green-500 text-3xl"

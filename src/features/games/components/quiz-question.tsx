@@ -58,8 +58,8 @@ export function QuizQuestion({
   }, [isRevealed, questionReveal]);
 
   return (
-    <Card className="bg-white/10 border-white/20 animate-in fade-in slide-in-from-top-4 duration-500">
-      <CardContent className="p-6 relative min-h-75">
+    <div className="bg-white/10 border-white/20 animate-in fade-in slide-in-from-top-4 duration-500 p-0 flex-1">
+      <div className="p-6  h-full ">
         {/* Default Question */}
         <QuestionContent
           question={question}
@@ -73,8 +73,8 @@ export function QuizQuestion({
             isVisible={showReveal && imagesLoaded && isRevealed}
           />
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
@@ -87,13 +87,17 @@ function QuestionContent({ question, isVisible }: QuestionContentProps) {
   return (
     <div
       className={cn(
-        "transition-opacity duration-500",
-        isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+        "transition-opacity duration-500 flex flex-col items-center justify-center bg-green-400 h-full",
+        isVisible ? "opacity-100" : "opacity-0 pointer-events-none",
       )}
     >
-      <h2 className="text-2xl font-bold text-white mb-2">{question.title}</h2>
+      <h2 className="text-xl md:text-2xl font-bold text-white text-center text-balance w-1/2">
+        {question.title}
+      </h2>
       {question.description && (
-        <p className="text-white/80 mb-4">{question.description}</p>
+        <p className="text-white/80 mb-4  text-center">
+          {question.description}
+        </p>
       )}
       {question.items && question.items.length > 0 && (
         <QuestionItems items={question.items} alt="Quiz image" />
@@ -114,15 +118,17 @@ function QuestionRevealContent({
   return (
     <div
       className={cn(
-        "absolute inset-6 transition-opacity duration-500",
-        isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
+        "transition-opacity duration-500 flex flex-col items-center justify-center bg-yellow-500 h-full",
+        isVisible ? "opacity-100" : "opacity-0 pointer-events-none",
       )}
     >
-      <h2 className="text-2xl font-bold text-white mb-2">
+      <h2 className="text-xl md:text-2xl font-bold text-white text-center text-balance w-1/2">
         {questionReveal.title}
       </h2>
       {questionReveal.description && (
-        <p className="text-white/80 mb-4">{questionReveal.description}</p>
+        <p className="text-white/80 mb-4  text-center">
+          {questionReveal.description}
+        </p>
       )}
       {questionReveal.items && questionReveal.items.length > 0 && (
         <QuestionItems items={questionReveal.items} alt="Quiz reveal image" />
@@ -144,24 +150,25 @@ interface QuestionItemsProps {
 
 function QuestionItems({ items, alt }: QuestionItemsProps) {
   return (
-    <div className="flex flex-wrap gap-4">
+    <div className="flex flex-wrap gap-4 bg-red-400 h-full w-full items-center justify-center">
       {items.map((item) => (
-        <div key={item.id}>
+        <div key={item.id} className="flex flex-col bg-purple-400 h-full w-fit">
           {item.imageUrl && (
+            // <div className="flex flex-1 bg-rose-500 w-full h-full">a</div>
             <Image
               src={item.imageUrl}
               alt={item.text || alt}
               width={200}
               height={150}
-              className="rounded-lg"
+              className="rounded-lg h-full w-full object-fill"
               priority
             />
           )}
-          {item.text && <p className="text-white mt-2">{item.text}</p>}
+          {item.text && (
+            <p className="text-white mt-2 text-center">{item.text}</p>
+          )}
         </div>
       ))}
     </div>
   );
 }
-
-

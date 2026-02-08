@@ -42,7 +42,7 @@ export default function Page({
 
   const { timeRemaining, reset: resetTimer } = useQuizTimer(
     !isAnswered && !!currentGameQuiz && !currentGameQuiz.isCompleted,
-    handleTimeUp
+    handleTimeUp,
   );
 
   const handleSubmit = useCallback(async () => {
@@ -95,7 +95,7 @@ export default function Page({
   }
 
   return (
-    <div className="flex flex-col gap-5 flex-1 p-6 max-w-4xl mx-auto">
+    <div className="flex flex-col gap-5 flex-1 p-3 md:p-5 max-w-4xl mx-auto bg-lime-900 shrink">
       <QuizHeader
         currentQuizNumber={currentQuizIndex + 1}
         totalQuizes={game.gameQuizes.length}

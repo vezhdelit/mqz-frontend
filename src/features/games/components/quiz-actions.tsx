@@ -25,8 +25,8 @@ export function QuizActions({
         <Button
           onClick={onSubmit}
           disabled={!canSubmit || isSubmitting}
-          size="lg"
-          className="px-8"
+          size="2xl"
+          className="px-8 py-8 w-full"
         >
           {isSubmitting ? "Submitting..." : "Submit Answer"}
         </Button>
@@ -37,11 +37,11 @@ export function QuizActions({
   return (
     <div className="flex justify-center gap-4">
       {hasNextQuiz ? (
-        <Button onClick={onNext} size="lg" className="px-8">
+        <Button onClick={onNext} size="2xl" className="px-8 py-8 w-full">
           Next Quiz
         </Button>
       ) : (
-        <Button onClick={onFinish} size="lg" className="px-8">
+        <Button onClick={onFinish} size="2xl" className="px-8 py-8 w-full">
           View Results
         </Button>
       )}

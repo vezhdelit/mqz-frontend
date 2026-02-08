@@ -30,11 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0e0729] flex flex-col h-screen`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0e0729] flex flex-col h-screen max-h-screen overflow-hidden`}
       >
         <ErrorBoundary>
           <Providers>
-            <main className="containerize p-5 flex flex-1">
+            <main className="containerize p-4 md:p-5 flex flex-1">
               <Surface className="flex flex-1 overflow-auto">
                 {children}
               </Surface>
